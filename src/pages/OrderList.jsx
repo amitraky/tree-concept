@@ -5,14 +5,17 @@ function getTree(data, clicking,parent=[]) {
   return data.map((v) => {
     if (v?.child?.length) {
       parent.push(v.name)
+
       return (
-        <li onClick={(e) => clicking(e, `${v.name}`,v.key,parent)}>
-          {v.name}
+        <li onClick={(e) => clicking(e, `${v.name}`,v.key,parent)} parent={parent.join(",")}>
+          {v.name}          
           <ul>{getTree(v.child, clicking,parent)}</ul>
         </li>
       );
     }
-    return <li onClick={(e) => clicking(e, `${v.name}`,v.key,parent)}>{v.name}</li>;
+    let dt = [...parent,v.name]
+
+    return <li onClick={(e) => clicking(e, `${v.name}`,v.key,dt)} parent={dt.join(",")}>{v.name}</li>;
   });
 }
 
@@ -28,14 +31,29 @@ function underChild(list,key) {
     
 }
 
+ let realData = [];
+function updateNode(list,key,text,link){
 
-function updateNode(list,key,text){
+  console.log("link",link)
+  for(let ch of list){
+   let name = ch.name;
+   let parentName = link.at(-1);
+ 
+   if(parentName == name){
+    let c = [];
+    if(ch?.child)  c.push(ch.child)
+    c.push({name:text})  
+    ch['child'] = c
+    console.log("Matching..........")
+    return ch;
+   }
+   realData['name'] = ch.name;
+    if(ch?.child?.length){
+      realData['child'] =  updateNode(ch?.child,key,text,link)
+    }
+  } 
 
-
-
-    console.log("List",list,key ,text)
-
-
+  return realData;
 }
 
 function OrderList() {
@@ -46,20 +64,17 @@ function OrderList() {
   const [keyId, setKeyId] = useState("");
   const [parentText, setParentText] = useState("");
   const [clicked, setClicked] = useState("");
+  const [parentLink, setParentLink] = useState("");
 
 
-  let clicking = (v, key,p) => {
+  let clicking = (v, key,p,par) => {
 
-      
-     console.log("5555555555555",v,key,p)
-
+    let parnt =  v.target.getAttribute("parent")
+    parnt =parnt.split(",")
+    setParentLink(parnt)
     v.stopPropagation();
     let parent = v.target.innerText;
-
-    console.log(v)
     setParentText(parent);
-  
-   
   };
 
   let addList = () => {
@@ -72,8 +87,8 @@ function OrderList() {
       
     }
 
-   let dt =  updateNode(list,clicked,text)
-    console.log(dt)
+   let dt =  updateNode(list,clicked,text,parentLink)
+    console.log("ddd",dt)
 
 
     console.log(x)
