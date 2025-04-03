@@ -5,6 +5,7 @@
 // import ForceGraph from "./ForceGraph";
 // import Addition from "./pages/Addition"
 import OrderList from "./pages/OrderList"
+import Loading from "./pages/Loading"
 
 function App() {
 
@@ -21,8 +22,12 @@ function App() {
   return (
     <div>
 
-      <h2 >Hello world!</h2>
+    
        {/* <Addition/> */}
+      <h1>Task 1</h1>
+      <Loading/>
+     <hr></hr>
+     <h1>Task 2</h1>
       <OrderList/>
       {/* <Reactd3graph /> */}
       {/* <ReactGraphVis /> */}
